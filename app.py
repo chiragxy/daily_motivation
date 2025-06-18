@@ -1,39 +1,64 @@
 import streamlit as st
 import requests
+import random
+import time
 
-# Load API key securely
+# ----- Config -----
+st.set_page_config(page_title="Daily Motivation", page_icon="🌟", layout="centered")
+
+# ----- Groq API Key -----
 api_key = st.secrets["GROQ_API_KEY"]
-
-# Groq API endpoint
 url = "https://api.groq.com/openai/v1/chat/completions"
 
-# Streamlit App UI
-st.title("🌟 Daily Motivation (Powered by Groq + Llama 3)")
+# ----- Encouragement messages -----
+loading_messages = [
+    "Brewing positivity... ☕",
+    "Tuning into greatness... 🎧",
+    "Polishing your mindset... ✨",
+    "Sharpening your focus... 🎯",
+    "Feeding your soul... 💫",
+]
 
-if st.button("Get Motivational Quote"):
-    st.info("Generating your quote...")
+# ----- Page Title -----
+st.markdown("""
+# 🌈 **Daily Dose of Motivation**
+Welcome! Click the button below to spark your day with an inspiring quote.  
+""")
 
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json"
-    }
+# ----- Button -----
+if st.button("💡 Inspire Me!"):
+    # Random fun loading message
+    with st.spinner(random.choice(loading_messages)):
+        time.sleep(1)  # short wait to enhance feel
 
-    payload = {
-        "model": "llama3-8b-8192",  # You can also try "llama3-70b-8192"
-        "messages": [
-            {"role": "user", "content": "Give me a short motivational quote"}
-        ],
-        "temperature": 0.7,
-        "max_tokens": 60
-    }
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
 
-    try:
-        response = requests.post(url, headers=headers, json=payload)
-        response.raise_for_status()
-        result = response.json()
-        quote = result["choices"][0]["message"]["content"]
-        st.success("Here's your quote:")
-        st.write(quote.strip())
+        payload = {
+            "model": "llama3-8b-8192",
+            "messages": [
+                {"role": "user", "content": "Give me a short motivational quote"}
+            ],
+            "temperature": 0.8,
+            "max_tokens": 60
+        }
 
-    except Exception as e:
-        st.error(f"Error: {e}")
+        try:
+            response = requests.post(url, headers=headers, json=payload)
+            response.raise_for_status()
+            result = response.json()
+            quote = result["choices"][0]["message"]["content"].strip()
+
+            st.success("🌟 Here's your quote:")
+            st.markdown(f"> *{quote}*")
+
+            st.caption("🤖 Powered by LLaMA3-8B via Groq API")
+
+        except Exception as e:
+            st.error(f"⚠️ Failed to fetch quote: {e}")
+else:
+    st.image("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzM2OHVvYmxyZDA4bzZ5NDBhcHZyc3NvZ3h6dTdkMnR2ZmU3enN1YyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Cmr1OMJ2FN0B2/giphy.gif",
+             use_column_width=True, caption="Click above to get inspired!")
+
