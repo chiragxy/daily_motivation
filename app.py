@@ -60,5 +60,5 @@ if st.button("💡 Inspire Me!"):
             st.error(f"⚠️ Failed to fetch quote: {e}")
 else:
     st.image("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNzM2OHVvYmxyZDA4bzZ5NDBhcHZyc3NvZ3h6dTdkMnR2ZmU3enN1YyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/Cmr1OMJ2FN0B2/giphy.gif",
-             use_column_width=True, caption="Click above to get inspired!")
+             use_container_width=True, caption="Click above to get inspired!")
 
